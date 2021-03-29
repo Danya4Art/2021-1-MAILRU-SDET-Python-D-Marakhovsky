@@ -1,5 +1,5 @@
 from selenium.webdriver.common.by import By
-from top_panel import *
+from top_panel import tags, href
 
 class StartPageLocators:
     BUTTON_LOCATOR = (By.XPATH, '//*[@class="js-target-content-react"]//div[(text()="Войти")]')

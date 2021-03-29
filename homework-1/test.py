@@ -1,5 +1,6 @@
 import pytest
-from pages import *
+from pages import StartPage, MainPage, ProfilePage
+from top_panel import tags, urls
 
 
 class Test:
@@ -39,7 +40,10 @@ class Test:
     # 5 - ИНСТРУМЕНТЫ
     @pytest.mark.parametrize(
         'next_page, url_expected', 
-        [(tags[i], urls[i]) for i in [1, 3]]
+        [
+        (tags[1], urls[1]),
+        (tags[3], urls[3])
+        ]
     )
     @pytest.mark.UI
     def test_parametrize_pages(self, next_page, url_expected):
