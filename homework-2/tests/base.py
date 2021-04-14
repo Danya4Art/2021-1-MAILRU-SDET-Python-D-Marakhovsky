@@ -1,5 +1,5 @@
 import pytest
-from pages import StartPage
+from pages.start_page import StartPage
 
 
 class BaseCase(object):
@@ -15,4 +15,4 @@ class BaseCase(object):
     def login(self, driver, config):
         self.logger.info('Login in fixture')
         main_page = self.page.login(config['log'], config['psw'])
-        yield main_page
+        return main_page
