@@ -118,7 +118,6 @@ class ApiClient:
 
 
     def delete_campaign(self, campaign_id):
-        # print(campaign_id)
         location = 'https://target.my.com/api/v2/campaigns/mass_action.json'
         payload = [{"id":campaign_id,"status":"deleted"}]
         headers = {
@@ -126,7 +125,6 @@ class ApiClient:
         }
         result = self.session.post(location, headers=headers, data=payload)
         assert '20' in str(result)
-        # print(result, result.json())
 
 
     def create_segment(self):
@@ -153,7 +151,6 @@ class ApiClient:
                 }
             ]
         }
-        print(self.session.cookies)
         result = self.session.post(location, data=json.dumps(payload), headers=headers)
         assert '20' in str(result)
 
