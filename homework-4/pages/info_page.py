@@ -14,6 +14,9 @@ class InfoPage(BasePage):
         self.logger.info('Check info') 
         apk_version = re.findall(r'v(.+).apk', DESIRED_CAPS['app'])
         self.logger.debug('Check version') 
-        assert apk_version[0] in self.find(self.locators.VERSION_LOCATOR).get_attribute('text')
+        current_version = self.find(self.locators.VERSION_LOCATOR).get_attribute('text')
+        self.logger.info(f'''file version: {apk_version[0]}
+        				     app version: {current_version}''')
+        assert apk_version[0] in current_version
         self.logger.debug('Check rights')
         assert 'Все права защищены' in self.find(self.locators.ALL_RIGHTS_RESERVED_LOCATOR).get_attribute('text')

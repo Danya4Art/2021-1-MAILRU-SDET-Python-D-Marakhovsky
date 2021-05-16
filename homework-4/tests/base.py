@@ -7,6 +7,6 @@ class BaseCase(object):
     @pytest.fixture(scope='function', autouse=True)
     def setup(self, driver, logger):
         self.logger = logger
-        self.logger.info('Open browser')
+        self.logger.info('Connect to appium')
         self.driver = driver
         self.main_page = MainPage(driver)

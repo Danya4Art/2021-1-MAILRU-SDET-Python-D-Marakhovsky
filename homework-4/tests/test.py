@@ -16,7 +16,8 @@ class Test(BaseCase):
     @pytest.mark.parametrize(
         'expression, result_expected', 
         [
-        ('3+5', 8)
+        ('3+5', 8),
+        ('5*5', 25)
         ]
     )
     def test_calc(self, expression, result_expected):

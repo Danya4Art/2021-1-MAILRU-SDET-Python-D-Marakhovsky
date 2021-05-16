@@ -9,11 +9,6 @@ class MainPage(BasePage):
 
     locators = MainPageLocators()
 
-    def __init__(self, driver):
-        super().__init__(driver)
-        self.click(self.locators.DENY_BUTTON)
-        self.click(self.locators.DENY_BUTTON)
-
     @allure.step('Search Russia')
     def search_russia(self):
         self.logger.info('Search Russia') 
@@ -23,7 +18,7 @@ class MainPage(BasePage):
         self.logger.debug('Hide keyboard')
         self.driver.hide_keyboard()
         assert "России" in self.find(self.locators.CARD_LOCATOR).get_attribute('text')
-        next_message = (By.XPATH, self.locators.ANSWER_LOCATOR.format('численность населения россии'))
+        next_message = (By.XPATH, self.locators.ANSWER_LOCATOR.format('население россии'))
         swipe_elem = self.find(self.locators.ANSWER_LIST_LOCATOR)
         self.swipe_to_element(next_message, position='right', swipe_elem=swipe_elem)
         self.click(next_message)

@@ -41,7 +41,7 @@ class BasePage(object):
         elem.send_keys(key)
 
     @staticmethod
-    def get_cental_coor(elem):
+    def get_central_coor(elem):
         coor = re.findall(
                          r'\[(\d+),(\d+)\]\[(\d+),(\d+)\]', 
                          elem.get_attribute('bounds')
@@ -76,20 +76,20 @@ class BasePage(object):
         elif position == 'right' and swipe_elem != None:
             start = {
             'x': int(dimension['width'] * 0.8),
-            'y': self.get_cental_coor(swipe_elem)['y']
+            'y': self.get_central_coor(swipe_elem)['y']
             }
             end = {
             'x': int(dimension['width'] * 0.2),
-            'y': self.get_cental_coor(swipe_elem)['y']
+            'y': self.get_central_coor(swipe_elem)['y']
             }
         elif position == 'left' and swipe_elem != None:
             start = {
             'x': int(dimension['width'] * 0.2),
-            'y': self.get_cental_coor(swipe_elem)['y']
+            'y': self.get_central_coor(swipe_elem)['y']
             }
             end = {
             'x': int(dimension['width'] * 0.8),
-            'y': self.get_cental_coor(swipe_elem)['y']
+            'y': self.get_central_coor(swipe_elem)['y']
             }
         else:
             raise ValueError('Invalid position')

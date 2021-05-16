@@ -13,5 +13,6 @@ DESIRED_CAPS = {
 "appPackage": "ru.mail.search.electroscope",
 "appActivity": "ru.mail.search.electroscope.ui.activity.AssistantActivity",
 "app": file_path(),
-"orientation": "PORTRAIT"
+"orientation": "PORTRAIT",
+"autoGrantPermissions": "true"
 }

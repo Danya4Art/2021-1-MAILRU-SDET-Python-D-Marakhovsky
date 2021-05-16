@@ -78,13 +78,12 @@ def ui_report(driver, request, test_dir):
         driver.get_screenshot_as_file(screenshot_file)
         allure.attach.file(screenshot_file, 'failure.png', attachment_type=allure.attachment_type.PNG)
 
-        browser_logfile = os.path.join(test_dir, 'browser.log')
-        with open(browser_logfile, 'w') as f:
-            for i in driver.get_log('browser'):
-                f.write(f"{i['level']} - {i['source']}\n{i['message']}\n\n")
-
-        with open(browser_logfile, 'r') as f:
-            allure.attach(f.read(), 'browser.log', attachment_type=allure.attachment_type.TEXT)
+        appium_logfile = os.path.join(test_dir, 'server.log')
+        with open(appium_logfile, 'w') as f:
+            for i in driver.get_log('server'):
+                f.write(f"{i['message']}\n\n")
+        with open(appium_logfile, 'r') as f:
+            allure.attach(f.read(), 'server.log', attachment_type=allure.attachment_type.TEXT)
 
         log_file = os.path.join(test_dir, 'test.log')
         if os.path.exists(log_file):
