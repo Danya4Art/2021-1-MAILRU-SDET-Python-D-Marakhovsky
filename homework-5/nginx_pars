@@ -1,0 +1,81 @@
+#!/usr/bin/python3
+import os
+import re
+import sys
+import getopt
+import json
+
+nginx_pattern = re.compile(r"(?P<ip>([\d]+)\.([\d]+)\.([\d]+)\.([\d]+))"
+    r"\s-\s-\s(?P<date>\[.+\])\s\"(?P<req>.+)\s(?P<url>.+)\s(HTTP/1\.\d)\"\s"
+    r"(?P<code>\d+)\s(?P<value>\d*)")
+
+def req_type(log):
+    res = []
+    for line in log:
+        answer = nginx_pattern.search(line)
+        if answer:
+            res += [answer.group("req")]
+    res = [(x, res.count(x)) for x in set(res)]
+    res.sort(key = lambda x: x[1])
+    return [f"{res[i][0]} {res[i][1]}" for i in range(len(res))]
+
+def req_count(log):
+    res = []
+    for line in log:
+        answer = nginx_pattern.search(line)
+        if answer:
+            res += [answer.group("url")]
+    res = [(x, res.count(x)) for x in set(res)]
+    res.sort(key = lambda x: x[1], reverse = True)
+    return [f"{res[i][0]} {res[i][1]}" for i in range(min(10,len(res)))]
+
+def req_val(log):
+    res = []
+    for line in log:
+        answer = nginx_pattern.search(line)
+        if answer and re.match(r"4\d{2}", answer.group("code")):
+            res += [(answer.group("url"), 
+                answer.group("code"), 
+                int(answer.group("value")), 
+                answer.group("ip"))]
+    res.sort(key = lambda x: x[2], reverse = True)
+    return [f"{res[i][0]} {res[i][1]} {res[i][2]} {res[i][3]}" for i in range(min(5,len(res)))]
+
+def user_err(log):
+    res = []
+    for line in log:
+        answer = nginx_pattern.search(line)
+        if answer and re.match(r"5\d{2}", answer.group("code")):
+            res += [answer.group("ip")]
+    res = [(x, res.count(x)) for x in set(res)]
+    res.sort(key = lambda x: x[1], reverse = True)
+    return [f"{res[i][0]} {res[i][1]}" for i in range(min(5,len(res)))]
+
+
+argument_list = sys.argv[1:]
+short_option = ""
+long_options = ["json"]
+
+try:
+    arguments, values = getopt.getopt(argument_list, short_option, long_options)
+except getopt.error as err:
+    print (str(err))
+    sys.exit(2)
+log = os.popen("cat access.log").readlines()
+
+data = {}
+data['Number of request'] = [str(len(log))]
+data['Top types of requests'] = req_type(log)
+data['Top requests by count'] = req_count(log)
+data['Top requests by value'] = req_val(log)
+data['Top users by errors'] = user_err(log)
+
+for arg, res in arguments:
+    if arg == ("--json"):
+        print('json')
+        with open("nginx_data.json", "w") as outfile:
+            json.dump(data, outfile, indent=4)
+            sys.exit(0)
+for key, value in data.items():
+    value = '\n'.join(value)
+    print(f'\n{key}:\n{value}')
