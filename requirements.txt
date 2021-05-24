@@ -4,3 +4,4 @@ selenium 3.141.0
 allure-pytest 2.8.40
 webdriver-manager 3.3.0
 appium-python-client 1.1.0
+Flask 2.0.1
