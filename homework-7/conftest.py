@@ -42,7 +42,7 @@ def start_app(config):
             started = True
             break
         except ConnectionError:
-            pass
+            time.sleep(1)
 
     if not started:
         raise RuntimeError('App did not started in 5s!')

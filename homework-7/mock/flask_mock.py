@@ -15,9 +15,9 @@ SURNAME_DATA = {}
 @app.route('/get_surname/<name>', methods=['GET'])
 def get_user_surname(name):
     if surname := SURNAME_DATA.get(name):
-        return jsonify(surname), 200
+        return jsonify({"surname": surname}), 200
     else:
-        return jsonify(f'Surname for user {name} not fount'), 404
+        return jsonify({'msg': f'Surname for user {name} not fount'}), 404
 
 
 def run_mock():
@@ -38,26 +38,25 @@ def shutdown_mock():
 @app.route('/shutdown')
 def shutdown():
     shutdown_mock()
-    return jsonify(f'OK, exiting'), 200
+    return jsonify({'msg': f'OK, exiting'}), 200
 
 @app.route('/rewrite/<name>', methods=['PUT'])
 def rewrite_user_surname(name):
-    print(request.data)
     new_surname = json.loads(request.data)['surname']
     if name in SURNAME_DATA.keys():
         surname = SURNAME_DATA[name]
         SURNAME_DATA[name] = new_surname
-        data = jsonify(f'Change user {name} surname from {surname} to {new_surname}'), 200
+        data = jsonify({'name': name, 'surname': surname, 'new_surname': new_surname}), 200
     else:
-        data = jsonify(f'Surname of user {name} is not foudn'), 404
+        data = jsonify({'msg': f'Surname of user {name} is not foudn'}), 404
     return data
 
 @app.route('/delete/<name>', methods=['DELETE'])
 def delete_user_surname(name):
     if name in SURNAME_DATA.keys():
+        surname = SURNAME_DATA[name]
         SURNAME_DATA.pop(name)
-        print('Im here')
-        data = jsonify(f'Surname of user {name} has been removed'), 200
+        data = jsonify({'name': name, 'surname': surname}), 200
     else:
-        data = jsonify(f'Surname of user {name} was not found'), 404
+        data = jsonify({'msg': f'Surname of user {name} was not found'}), 404
     return data

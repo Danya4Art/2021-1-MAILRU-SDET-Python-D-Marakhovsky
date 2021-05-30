@@ -28,8 +28,13 @@ class Test(Base):
         requests.delete(f'{self.url_mock}/delete/{name}')
         assert name not in SURNAME_DATA.keys()
 
-    def test_soket_get(self):
+    def test_soket_get_surname(self):
         name = 'Cat'
         SURNAME_DATA[name] = 'Zaitcev'
-        requests.post(f'{self.url}/add_user', json={'name': name})
+        self.client.create_new_user(name)
         assert 'Zaitcev' in self.client.get_surname_by_name(name)
+
+    def test_socket_get_data(self):
+        name = 'Jojo'
+        self.client.create_new_user(name)
+        assert '200' in self.client.get_user_data(name)
