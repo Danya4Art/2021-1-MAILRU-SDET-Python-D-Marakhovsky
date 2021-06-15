@@ -1,0 +1,71 @@
+version: '2.1'
+
+networks:
+  selenoid:
+    external:
+      name: selenoid # This assumes network is already created
+
+
+services:
+
+  selenoid:
+    networks:
+      selenoid: null
+    image: "aerokube/selenoid:latest-release"
+    ports:
+      - 4444:4444
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/daniil/Programs/Python/Homeworks/final-project/selenoid/config:/etc/selenoid
+      - /home/daniil/Programs/Python/Homeworks/final-project/selenoid/video:/opt/selenoid/video
+      - /home/daniil/Programs/Python/Homeworks/final-project/selenoid/logs:/opt/selenoid/logs
+    environment:
+      - OVERRIDE_VIDEO_OUTPUT_DIR=/path/to/config/video
+    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs", "-container-network", "selenoid"]
+
+  mysql:
+    image: "percona:latest"
+    ports:
+      - 3306:3306
+    volumes:
+      - /var/lib/mysql:/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: MYSQL_DB
+      MYSQL_USER: test_qa
+      MYSQL_PASSWORD: qa_test
+    depends_on:
+      vk_mock:
+        condition: service_started
+    healthcheck:
+      test: ['CMD', 'mysqladmin', '-uroot', '-ppass', 'ping', '-h', '127.0.0.1']
+      timeout: 1s
+      retries: 30
+
+
+  vk_mock:
+    image: "vk_mock:latest"
+    ports: 
+      - 5000:5000
+
+
+  myapp:
+    image: "myapp:latest"
+    ports:
+      - 8080:8080
+    volumes:
+      - /home/daniil/Programs/Python/Homeworks/final-project/app/myapp_config:/app/myapp_config
+    entrypoint: /app/myapp --config=/app/myapp_config
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+
+  tests:
+    image: "test_qa:latest"
+    volumes:
+      - /home/daniil/Programs/Python/Homeworks/final-project/code:/code
+    entrypoint: /bin/bash /code/start_tests.sh
+    depends_on:
+      myapp:
+        condition: service_started
